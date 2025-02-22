@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
+import { getAllCompanies } from "../../../Backend/services/companyService.tsx";
 import {
   Table,
   TableBody,
@@ -16,81 +17,30 @@ import { ThemeProvider } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { BarChart } from "lucide-react";
 
-interface Prospect {
-  id: string;
-  logo: string;
-  name: string;
-  employees: string;
-  industry: string[];
-  location: string;
-  type: "B2B" | "B2C" | "Both";
-}
-
-const mockData: Prospect[] = [
-  {
-    id: "1",
-    logo: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=80&h=80&fit=crop",
-    name: "TechCorp AI",
-    employees: "50-100",
-    industry: ["AI/ML", "Fintech"],
-    location: "Bay Area",
-    type: "B2B",
-  },
-  {
-    id: "2",
-    logo: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=80&h=80&fit=crop",
-    name: "BioHealth Solutions",
-    employees: "100-250",
-    industry: ["Bio Health"],
-    location: "Seattle",
-    type: "B2C",
-  },
-  {
-    id: "3",
-    logo: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=80&h=80&fit=crop",
-    name: "Crypto Dynamics",
-    employees: "25-50",
-    industry: ["Crypto", "Fintech"],
-    location: "Remote",
-    type: "Both",
-  },
-];
-
-const industries = ["AI/ML", "Bio Health", "Crypto", "Fintech", "Hardware"];
-const locations = [
-  "Remote",
-  "Bay Area",
-  "Washington DC",
-  "Chicago",
-  "LA",
-  "Seattle",
-  "Orange County",
-  "New York",
-];
-
 const Index = () => {
   const navigate = useNavigate();
+  const [companies, setCompanies] = useState([]);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    getAllCompanies().then((data) => setCompanies(data));
+  }, []);
+
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries((prev) =>
-      prev.includes(industry)
-        ? prev.filter((i) => i !== industry)
-        : [...prev, industry]
+      prev.includes(industry) ? prev.filter((i) => i !== industry) : [...prev, industry]
     );
   };
 
   const toggleLocation = (location: string) => {
     setSelectedLocations((prev) =>
-      prev.includes(location)
-        ? prev.filter((l) => l !== location)
-        : [...prev, location]
+      prev.includes(location) ? prev.filter((l) => l !== location) : [...prev, location]
     );
   };
 
-  const filteredData = mockData.filter((prospect) => {
+  const filteredData = companies.filter((prospect) => {
     const matchesIndustry =
       selectedIndustries.length === 0 ||
       prospect.industry.some((i) => selectedIndustries.includes(i));
@@ -118,11 +68,7 @@ const Index = () => {
                 <p className="text-muted-foreground">Browse and filter company prospects</p>
               </div>
               <div className="flex items-center gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/insights")}
-                  className="gap-2"
-                >
+                <Button variant="outline" onClick={() => navigate("/insights")} className="gap-2">
                   <BarChart className="h-4 w-4" />
                   Insights
                 </Button>
@@ -138,45 +84,6 @@ const Index = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 w-full max-w-md"
               />
-            </div>
-
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">Industries</h3>
-                <div className="flex flex-wrap gap-2">
-                  {industries.map((industry) => (
-                    <Badge
-                      key={industry}
-                      variant={
-                        selectedIndustries.includes(industry) ? "default" : "outline"
-                      }
-                      className="cursor-pointer transition-all hover:scale-105 px-3 py-1"
-                      onClick={() => toggleIndustry(industry)}
-                    >
-                      {industry}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">Locations</h3>
-                <div className="flex flex-wrap gap-2">
-                  {locations.map((location) => (
-                    <Badge
-                      key={location}
-                      variant={
-                        selectedLocations.includes(location) ? "default" : "outline"
-                      }
-                      className="cursor-pointer transition-all hover:scale-105 px-3 py-1"
-                      onClick={() => toggleLocation(location)}
-                    >
-                      <MapPin className="h-3 w-3 mr-1.5" />
-                      {location}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
 
@@ -214,11 +121,7 @@ const Index = () => {
                     <TableCell>
                       <div className="flex flex-wrap gap-1.5">
                         {prospect.industry.map((ind) => (
-                          <Badge
-                            key={ind}
-                            variant="outline"
-                            className="text-xs"
-                          >
+                          <Badge key={ind} variant="outline" className="text-xs">
                             {ind}
                           </Badge>
                         ))}
@@ -231,10 +134,7 @@ const Index = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="text-xs"
-                      >
+                      <Badge variant="outline" className="text-xs">
                         <Globe className="h-3 w-3 mr-1.5" />
                         {prospect.type}
                       </Badge>
