@@ -1,6 +1,11 @@
 import json
 import csv
 
+# To-do:
+# 1. remove ID with 'university'
+# 2. remove ID values with 'not available'
+
+
 # load JSON data
 with open('companies.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
