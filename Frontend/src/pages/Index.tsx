@@ -28,7 +28,7 @@ interface Company {
   website: string;
   social_media_links: string;
   monthly_visits: number;
-  about: string;
+  about: string; // Added about field here
   address: string;
   country_code: string;
   cb_rank: number;
@@ -141,10 +141,16 @@ const Index = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Logo</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Industry</TableHead>
-                <TableHead>Location</TableHead>
+                <TableHead className="text-center">Logo</TableHead>
+                <TableHead className="text-center">Name</TableHead>
+                <TableHead className="text-center min-w-[200px]">About</TableHead>
+                <TableHead className="text-center">Industry</TableHead>
+                <TableHead className="text-center">Location</TableHead>
+                <TableHead className="text-center min-w-[200px]">Investors</TableHead>
+                <TableHead className="text-center">Value (USD)</TableHead>
+                <TableHead className="text-center">Founded</TableHead>
+                <TableHead className="text-center">Employees</TableHead>
+                <TableHead className="text-center">Website</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -152,8 +158,18 @@ const Index = () => {
                 <TableRow key={company.id} onClick={() => handleCompanyClick(company.id)}>
                   <TableCell><img src={company.image || "https://via.placeholder.com/80"} className="w-10 h-10" /></TableCell>
                   <TableCell>{company.name}</TableCell>
+                  <TableCell>{company.about}</TableCell>
                   <TableCell>{company.industries}</TableCell>
                   <TableCell>{company.address}</TableCell>
+                  <TableCell>{company.investors}</TableCell>
+                  <TableCell>{company.value_usd ? `$${company.value_usd.toLocaleString()}` : "N/A"}</TableCell>
+                  <TableCell>{company.founded_date}</TableCell>
+                  <TableCell>{company.num_employees}</TableCell>
+                  <TableCell>
+                    <a href={company.website} target="_blank" rel="noopener noreferrer">
+                      {company.website}
+                    </a>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
