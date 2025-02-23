@@ -9,12 +9,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Globe, Search } from "lucide-react";
+import { MapPin, Globe, Search, BarChart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ThemeProvider } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { BarChart } from "lucide-react";
 
 interface Company {
   id: number;
@@ -76,7 +75,7 @@ const Index = () => {
     
     const matchesIndustry = company.industries?.toLowerCase().includes(lowercasedSearchTerm);
     const matchesSearch = company.name?.toLowerCase().includes(lowercasedSearchTerm);
-    const matchesLocationSearch = company.address?.toLowerCase().includes(lowercasedSearchTerm); // Added location search
+    const matchesLocationSearch = company.address?.toLowerCase().includes(lowercasedSearchTerm);
 
     const matchesLocation = selectedLocation.length === 0 || 
       selectedLocation.some((loc) => company.address?.toLowerCase().includes(loc.toLowerCase()));
@@ -139,6 +138,7 @@ const Index = () => {
                 <TableHead className="text-center">Name</TableHead>
                 <TableHead className="text-center">Industry</TableHead>
                 <TableHead className="text-center">Location</TableHead>
+                <TableHead className="text-center">Latest Funding Type</TableHead>
                 <TableHead className="text-center">Investors</TableHead>
                 <TableHead className="text-center">Value (USD)</TableHead>
                 <TableHead className="text-center">Founded</TableHead>
@@ -153,6 +153,7 @@ const Index = () => {
                   <TableCell>{company.name}</TableCell>
                   <TableCell>{company.industries || "N/A"}</TableCell>
                   <TableCell>{company.address || "N/A"}</TableCell>
+                  <TableCell>{company.last_funding_type || "N/A"}</TableCell>
                   <TableCell>{company.investors || "N/A"}</TableCell>
                   <TableCell>{company.value_usd ? `$${company.value_usd.toLocaleString()}` : "N/A"}</TableCell>
                   <TableCell>{company.founded_date || "N/A"}</TableCell>
@@ -160,6 +161,7 @@ const Index = () => {
               ))}
             </TableBody>
           </Table>
+
         </div>
       </div>
     </ThemeProvider>
