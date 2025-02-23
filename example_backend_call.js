@@ -1,13 +1,12 @@
-// frontend.js
 const { fork } = require('child_process');
 
-function sendMessageToBackend(message) {
+function sendQueryToBackend(query) {
     return new Promise((resolve, reject) => {
         // Fork the backend.py script
         const backendProcess = fork('backend.py');
 
-        // Send the message to the backend
-        backendProcess.send({ message: message });
+        // Send the query to the backend
+        backendProcess.send({ query: query });
 
         // Listen for the response from the backend
         backendProcess.on('message', (response) => {
@@ -29,9 +28,9 @@ function sendMessageToBackend(message) {
 }
 
 // Example usage
-sendMessageToBackend("What startups are the most difficult to get into?")
+sendQueryToBackend("Find all people with Python skills.")
     .then((response) => {
-        console.log("LLM Response:", response);
+        console.log("AI Response:", response.response);
     })
     .catch((error) => {
         console.error("Error:", error);
