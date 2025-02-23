@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -16,45 +16,25 @@ import { ThemeProvider } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { BarChart } from "lucide-react";
 
-interface Prospect {
-  id: string;
-  logo: string;
+interface Company {
+  id: number;
   name: string;
-  employees: string;
-  industry: string[];
-  location: string;
-  type: "B2B" | "B2C" | "Both";
+  industries: string;
+  investors: string;
+  value_usd: number;
+  last_funding_type: string;
+  founded_date: string;
+  num_employees: number;
+  website: string;
+  social_media_links: string;
+  monthly_visits: number;
+  about: string;
+  address: string;
+  country_code: string;
+  cb_rank: number;
+  full_description: string;
+  image: string;
 }
-
-const mockData: Prospect[] = [
-  {
-    id: "1",
-    logo: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=80&h=80&fit=crop",
-    name: "TechCorp AI",
-    employees: "50-100",
-    industry: ["AI/ML", "Fintech"],
-    location: "Bay Area",
-    type: "B2B",
-  },
-  {
-    id: "2",
-    logo: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=80&h=80&fit=crop",
-    name: "BioHealth Solutions",
-    employees: "100-250",
-    industry: ["Bio Health"],
-    location: "Seattle",
-    type: "B2C",
-  },
-  {
-    id: "3",
-    logo: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=80&h=80&fit=crop",
-    name: "Crypto Dynamics",
-    employees: "25-50",
-    industry: ["Crypto", "Fintech"],
-    location: "Remote",
-    type: "Both",
-  },
-];
 
 const industries = ["AI/ML", "Bio Health", "Crypto", "Fintech", "Hardware"];
 const locations = [
@@ -73,6 +53,27 @@ const Index = () => {
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch companies from the backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/companies");
+        const data = await response.json();
+        setCompanies(data);
+      } catch (err) {
+        console.error("Failed to fetch companies", err);
+        setError("Failed to load data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries((prev) =>
@@ -90,160 +91,73 @@ const Index = () => {
     );
   };
 
-  const filteredData = mockData.filter((prospect) => {
+  const filteredData = companies.filter((company) => {
     const matchesIndustry =
       selectedIndustries.length === 0 ||
-      prospect.industry.some((i) => selectedIndustries.includes(i));
+      company.industries.split(",").some((i) => selectedIndustries.includes(i.trim()));
     const matchesLocation =
       selectedLocations.length === 0 ||
-      selectedLocations.includes(prospect.location);
+      selectedLocations.includes(company.address);
     const matchesSearch =
       searchTerm === "" ||
-      prospect.name.toLowerCase().includes(searchTerm.toLowerCase());
+      company.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesIndustry && matchesLocation && matchesSearch;
   });
 
-  const handleCompanyClick = (id: string) => {
+  const handleCompanyClick = (id: number) => {
     navigate(`/company/${id}`);
   };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
+  }
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto p-8 space-y-8 animate-fadeIn">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-semibold text-foreground">Companies</h1>
-                <p className="text-muted-foreground">Browse and filter company prospects</p>
-              </div>
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/insights")}
-                  className="gap-2"
-                >
-                  <BarChart className="h-4 w-4" />
-                  Insights
-                </Button>
-                <ThemeToggle />
-              </div>
-            </div>
-
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search companies..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full max-w-md"
-              />
-            </div>
-
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">Industries</h3>
-                <div className="flex flex-wrap gap-2">
-                  {industries.map((industry) => (
-                    <Badge
-                      key={industry}
-                      variant={
-                        selectedIndustries.includes(industry) ? "default" : "outline"
-                      }
-                      className="cursor-pointer transition-all hover:scale-105 px-3 py-1"
-                      onClick={() => toggleIndustry(industry)}
-                    >
-                      {industry}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">Locations</h3>
-                <div className="flex flex-wrap gap-2">
-                  {locations.map((location) => (
-                    <Badge
-                      key={location}
-                      variant={
-                        selectedLocations.includes(location) ? "default" : "outline"
-                      }
-                      className="cursor-pointer transition-all hover:scale-105 px-3 py-1"
-                      onClick={() => toggleLocation(location)}
-                    >
-                      <MapPin className="h-3 w-3 mr-1.5" />
-                      {location}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-semibold">Companies</h1>
+            <Button variant="outline" onClick={() => navigate("/insights")}>
+              <BarChart className="h-4 w-4" /> Insights
+            </Button>
+            <ThemeToggle />
           </div>
 
-          <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px] font-medium">Logo</TableHead>
-                  <TableHead className="font-medium">Name</TableHead>
-                  <TableHead className="font-medium">Employees</TableHead>
-                  <TableHead className="font-medium">Industry</TableHead>
-                  <TableHead className="font-medium">Location</TableHead>
-                  <TableHead className="font-medium">Type</TableHead>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search companies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-full max-w-md"
+            />
+          </div>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Logo</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Industry</TableHead>
+                <TableHead>Location</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.map((company) => (
+                <TableRow key={company.id} onClick={() => handleCompanyClick(company.id)}>
+                  <TableCell><img src={company.image || "https://via.placeholder.com/80"} className="w-10 h-10" /></TableCell>
+                  <TableCell>{company.name}</TableCell>
+                  <TableCell>{company.industries}</TableCell>
+                  <TableCell>{company.address}</TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.map((prospect) => (
-                  <TableRow
-                    key={prospect.id}
-                    className="hover:bg-muted/50 cursor-pointer transition-colors group"
-                    onClick={() => handleCompanyClick(prospect.id)}
-                  >
-                    <TableCell className="py-4">
-                      <img
-                        src={prospect.logo}
-                        alt={`${prospect.name} logo`}
-                        className="w-10 h-10 rounded-lg object-cover border"
-                        loading="lazy"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium group-hover:text-primary transition-colors">
-                      {prospect.name}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">{prospect.employees}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1.5">
-                        {prospect.industry.map((ind) => (
-                          <Badge
-                            key={ind}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {ind}
-                          </Badge>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-1.5 text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span>{prospect.location}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="text-xs"
-                      >
-                        <Globe className="h-3 w-3 mr-1.5" />
-                        {prospect.type}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </ThemeProvider>
