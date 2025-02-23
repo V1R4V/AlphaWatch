@@ -10,7 +10,7 @@ csv_file_path = "data.csv"
 df = pd.read_csv(csv_file_path)
 
 # Initialize the Ollama LLM
-llm = Ollama(model="llama2")  # Replace with your preferred model
+llm = Ollama(model="deepseek-r1:1.5b")  # Replace with your preferred model
 
 # Define the CSV query tool
 @tool
