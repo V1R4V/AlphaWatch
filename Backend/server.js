@@ -51,6 +51,19 @@ app.get("/company/:id", (req, res) => {
   });
 });
 
+// Get insights by valuation
+app.get("/insights/valuation", (req, res) => {
+  const sql = `SELECT name, value_usd FROM companies ORDER BY value_usd DESC`;
+  
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
