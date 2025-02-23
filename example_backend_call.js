@@ -28,7 +28,7 @@ function sendQueryToBackend(query) {
 }
 
 // Example usage
-sendQueryToBackend("Find all people with Python skills.")
+sendQueryToBackend("Tell me more about ResearchGate")
     .then((response) => {
         console.log("AI Response:", response.response);
     })
