@@ -1,1 +1,9 @@
-# AlphaWatch
+# Startup Scout 
+## Startup Scout is a web platform designed to bridge the gap between venture capitalists, job seekers, and newly funded startups. 
+## By leveraging real-time data scraping, the platform tracks startups across various funding stages—Pre-Seed, Seed, and Series A—providing valuable insights for both investors and professionals seeking opportunities in emerging companies.
+
+## For Venture Capitalists & Investors: Early-Stage Investment Insights: Get access to a curated list of recently funded startups, categorized by funding round and industry. Market Trends & Analytics: Identify emerging sectors and high-growth startups based on funding patterns and investor movements. Deal Flow Optimization: Streamline deal sourcing by discovering promising startups before they hit mainstream attention. For Job Seekers & Professionals: Exclusive Startup Opportunities: Find roles in high-potential startups that are actively hiring after securing fresh funding. Targeted Search & Alerts: Discover companies aligned with your skills and career aspirations in a competitive job market. Insider Hiring Insights: Get notified about hiring trends in newly funded startups before positions become widely advertised. Why Startup Scouts? Data-Driven Decision Making: Aggregates funding data, hiring signals, and investor interest in one centralized platform. Real-Time Updates: Stay ahead of the curve with up-to-date funding rounds and company expansions. Efficiency & Competitive Edge: Save time by cutting through noise and focusing on the most relevant startup opportunities. Future Vision: AI-Powered Matching In the next phase, Startup Scouts will integrate AI-driven recommendations to personalize venture scouting and job discovery. FUTURE: For Investors: AI will analyze market trends, founder backgrounds, and financials to suggest high-potential startups tailored to your investment strategy. For Job Seekers: AI will match your skills, experience, and career goals with the best startup opportunities, giving you a competitive edge in a saturated job market.
+
+https://devpost.com/software/startupscout#updates
+
+
