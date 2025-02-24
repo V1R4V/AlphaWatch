@@ -7,3 +7,4 @@
 https://devpost.com/software/startupscout#updates
 
 
+https://www.canva.com/design/DAGf5OIG-h8/4NS3Y5qrjuuxTY6rRQ3eYg/edit
